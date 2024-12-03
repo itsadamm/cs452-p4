@@ -1,6 +1,7 @@
 TARGET_EXEC ?= myprogram
 TARGET_TEST ?= test-lab
 
+UNAME_S := $(shell uname -s)
 BUILD_DIR ?= build
 TEST_DIR ?= tests
 SRC_DIR ?= src
@@ -34,7 +35,11 @@ $(BUILD_DIR)/%.c.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 check: $(TARGET_TEST)
+ifeq ($(UNAME_S),Linux)
 	ASAN_OPTIONS=detect_leaks=1 ./$<
+else
+	./$<
+endif
 
 .PHONY: clean
 clean:
